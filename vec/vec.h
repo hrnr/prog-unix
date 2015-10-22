@@ -42,10 +42,7 @@ static inline void _vec_reserve(Vec *vec, size_t new_cap);
 static inline void _vec_add_space(Vec *vec, size_t count);
 
 static inline Vec* vec_init(size_t elem_size) {
-	Vec *vec = malloc(sizeof (Vec));
-	vec->_begin = NULL;
-	vec->_end = NULL;
-	vec->_end_of_storage = NULL;
+	Vec *vec = calloc(1, sizeof (Vec));
 	vec->_elem_size = elem_size;
 
 	return vec;
