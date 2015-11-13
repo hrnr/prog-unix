@@ -17,6 +17,7 @@ typedef struct
 } Vec;
 
 static inline Vec* vec_init(size_t elem_size);
+static inline void vec_init_on(Vec* vec, size_t elem_size);
 static inline void vec_free(Vec *vec);
 static inline void* vec_at(Vec *vec, size_t index);
 static inline void* vec_back(Vec *vec);
@@ -36,8 +37,10 @@ static inline void* vec_push(Vec *vec);
 static inline void vec_push_copy(Vec *vec, void* value);
 static inline void* vec_push_multi(Vec *vec, size_t count);
 static inline void vec_push_multi_copy(Vec *vec, size_t count, void *data);
+static inline void vec_pop(Vec *vec);
+static inline void vec_pop_multi(Vec *vec, size_t count);
 static inline void vec_resize(Vec *vec, size_t count);
-/* TODO erase, pop_back */
+/* TODO erase */
 static inline void _vec_reserve(Vec *vec, size_t new_cap);
 static inline void _vec_add_space(Vec *vec, size_t count);
 
@@ -46,6 +49,12 @@ static inline Vec* vec_init(size_t elem_size) {
 	vec->_elem_size = elem_size;
 
 	return vec;
+}
+
+/* do not call vec_free after that */
+static inline void vec_init_on(Vec* vec, size_t elem_size) {
+	memset(vec, 0, sizeof (Vec));
+	vec->_elem_size = elem_size;
 }
 
 static inline void vec_free(Vec *vec) {
@@ -109,7 +118,7 @@ static inline void* vec_insert_multi(Vec *vec, void *position, size_t count) {
 	_vec_add_space(vec, count); /* pointer to pos may be invalidated here */
 	char *new_elem = vec->_begin + offset;
 	memmove(new_elem + vec->_elem_size*count, new_elem, vec->_end - new_elem);
-	vec->_end = vec->_end + vec->_elem_size*count;
+	vec->_end += vec->_elem_size*count;
 	return new_elem;
 }
 
@@ -130,13 +139,21 @@ static inline void vec_push_copy(Vec *vec, void* value) {
 static inline void* vec_push_multi(Vec *vec, size_t count) {
 	_vec_add_space(vec, count);
 	void *new_elem_start = vec->_end;
-	vec->_end = vec->_end + vec->_elem_size*count;
+	vec->_end += vec->_elem_size*count;
 	return new_elem_start;
 }
 
 static inline void vec_push_multi_copy(Vec *vec, size_t count, void *data) {
 	void *new_elem_start = vec_push_multi(vec, count);
 	memcpy(new_elem_start, data, vec->_elem_size*count);
+}
+
+static inline void vec_pop(Vec *vec) {
+	vec_pop_multi(vec, 1);
+}
+
+static inline void vec_pop_multi(Vec *vec, size_t count) {
+	vec->_end -= vec->_elem_size*count;
 }
 
 static inline void vec_resize(Vec *vec, size_t count) {
