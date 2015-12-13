@@ -15,7 +15,7 @@ LDFLAGS = -g ${LIBS}
 SRC = client.c server.c
 OBJ = ${SRC:.c=.o}
 
-all: options main
+all: options client server
 
 options:
 	@echo build options:

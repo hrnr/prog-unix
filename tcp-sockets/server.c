@@ -1,10 +1,12 @@
 #define _XOPEN_SOURCE 700
 
-#include <stdio.h>
 #include <unistd.h>
-#include <sys/socket.h>
 #include <sys/types.h>
+#include <sys/socket.h>
+#include <sys/wait.h>
 #include <netdb.h>
+
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "protocol.h"
@@ -57,6 +59,7 @@ int main()
         client_conn = accept(serv_sock, (struct sockaddr *)&client_addr, &claddr_size);
         printf("newclient\n");
 
+        /* fork for each client */
         switch(fork()) {
             case -1:
                 perror("couldn't fork");
@@ -66,12 +69,15 @@ int main()
                 /* in child */
                 close(serv_sock);
                 respond(client_conn);
-                break;
+                return 0;
             default:
                 /* in parent */
                 close(client_conn);
                 break;
         }
+
+        /* collect returned children (ended connections) */
+        waitpid(-1, NULL, WNOHANG);
     }
 
     return 0;
