@@ -33,6 +33,8 @@ static inline void* vec_insert(Vec *vec, void *position);
 static inline void vec_insert_copy(Vec *vec, void *position, void *value);
 static inline void* vec_insert_multi(Vec *vec, void *position, size_t count);
 static inline void vec_insert_multi_copy(Vec *vec, void *position, size_t count, void *data);
+static inline void vec_erase(Vec *vec, void *position);
+static inline void vec_erase_multi(Vec *vec, void *position, size_t count);
 static inline void* vec_push(Vec *vec);
 static inline void vec_push_copy(Vec *vec, void* value);
 static inline void* vec_push_multi(Vec *vec, size_t count);
@@ -40,7 +42,7 @@ static inline void vec_push_multi_copy(Vec *vec, size_t count, void *data);
 static inline void vec_pop(Vec *vec);
 static inline void vec_pop_multi(Vec *vec, size_t count);
 static inline void vec_resize(Vec *vec, size_t count);
-/* TODO erase */
+/* TODO ranges, tame, untame, rework allocation */
 static inline void _vec_reserve(Vec *vec, size_t new_cap);
 static inline void _vec_add_space(Vec *vec, size_t count);
 
@@ -127,6 +129,16 @@ static inline void vec_insert_multi_copy(Vec *vec, void *position, size_t count,
 	memcpy(new_elem_start, data, vec->_elem_size*count);
 }
 
+static inline void vec_erase(Vec *vec, void *position) {
+	vec_erase_multi(vec, position, 1);
+}
+
+static inline void vec_erase_multi(Vec *vec, void *position, size_t count) {
+	char *new_pos = position + vec->_elem_size*count;
+	memmove(position, new_pos, vec->_end - new_pos);
+	vec->_end -= vec->_elem_size*count;
+}
+
 static inline void* vec_push(Vec *vec) {
 	return vec_push_multi(vec, 1);
 }
@@ -153,6 +165,7 @@ static inline void vec_pop(Vec *vec) {
 }
 
 static inline void vec_pop_multi(Vec *vec, size_t count) {
+	/* we don't use vec_erase_multi here, to always avoid memmove */
 	vec->_end -= vec->_elem_size*count;
 }
 
