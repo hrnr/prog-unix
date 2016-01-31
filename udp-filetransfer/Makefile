@@ -29,11 +29,11 @@ options:
 
 server: server.o
 	@echo CC server.c
-	@${CC} -o server server.c ${LDFLAGS}
+	@${CC} -o server.out server.o ${LDFLAGS}
 
 client: client.o
 	@echo CC client.c
-	@${CC} -o client client.c ${LDFLAGS}
+	@${CC} -o client.out client.o ${LDFLAGS}
 
 clean:
 	@echo cleaning
