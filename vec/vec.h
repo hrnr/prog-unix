@@ -134,7 +134,7 @@ static inline void vec_erase(Vec *vec, void *position) {
 }
 
 static inline void vec_erase_multi(Vec *vec, void *position, size_t count) {
-	char *new_pos = position + vec->_elem_size*count;
+	char *new_pos = (char*)position + vec->_elem_size*count;
 	memmove(position, new_pos, vec->_end - new_pos);
 	vec->_end -= vec->_elem_size*count;
 }
