@@ -37,28 +37,14 @@
 #include <stdio.h>
 #include <err.h>
 
-/* minimum difference (in seconds) */
-#define	MINDIFF	60
+#include "struct.h"
+
 /* assume 1 MB/s */
 #define	SECS2KBYTES(x)	((x) << 20)
 /* defaults */
 #define	DEFAULT_HARD	28800	/* 8 hours */
 #define	DEFAULT_SOFT	25200	/* 7 hours */
 
-/*
- * Rules:
- *
- *   soft_sec < hard_sec
- *   soft_kb  < hard_kb
- *   diff(soft_*, hard_*) >= MINDIFF
- *
- */
-typedef struct entry_s {
-	unsigned timer_hard_sec;
-	unsigned timer_soft_sec;
-	unsigned timer_hard_kb;
-	unsigned timer_soft_kb;
-} entry_t;
 
 /* Shape up the structure from the input data according to the rules above. */
 entry_t
