@@ -91,8 +91,10 @@ shape(int argc, char *argv[])
 	return e;
 }
 
+#ifndef TEST
 int
 main(int argc, char *argv[]) {
 	shape(argc, argv);
 	return (0);
 }
+#endif
