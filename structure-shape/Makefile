@@ -1,7 +1,7 @@
 
 PROG=shapeup
 
-TEST_FLAGS = -Og -fsanitize=undefined -fsanitize=address -lcmocka -DTEST
+TEST_FLAGS = -Wall -Og -fsanitize=undefined -fsanitize=address -lcmocka -DTEST
 
 all: $(PROG) test
 

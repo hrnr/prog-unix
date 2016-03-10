@@ -44,17 +44,15 @@ static void entry_default(void **state) {
 static void entry_random(void **state) {
 	const size_t iterations = 300;
 	struct arg args[4];
-	char *argv[5] = {"shape"};
+	char *argv[5] = {"shape", ARG(0), ARG(1), ARG(2), ARG(3)};
 	// choosen by fair dice roll
 	unsigned int seed = 0xdeadbeef;
 
 	for(size_t i = 0; i < iterations; ++i) {
 		// generate random arguments
-		for (int i = 0; i < 4; ++i)
+		for (int i = 0; i < 4; ++i) {
 			snprintf(ARG(i), 30, "%d", rand_r(&seed));
-		char *argv[] = { "shape",  ARG(0), ARG(1),
-			ARG(2), ARG(3)};
-
+		}
 		entry_t e = shape(LENGTH(argv), argv);
 		entry_assert(e);
 	}
@@ -62,7 +60,7 @@ static void entry_random(void **state) {
 
 static void entry_overflow(void **state) {
 	struct arg args[4];
-	char *argv[5] = {"shape"};
+	char *argv[5] = {"shape", ARG(0), ARG(1), ARG(2), ARG(3)};
 
 	/* max */
 	for (int i = 0; i < 4; ++i) {
