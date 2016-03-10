@@ -12,4 +12,4 @@ test: struct.c test.c
 	gcc -o $(PROG)_tests struct.c test.c ${TEST_FLAGS}
 
 clean:
-	rm -f *.o $(PROG) core a.out
+	rm -f *.o $(PROG) $(PROG)_tests core a.out
