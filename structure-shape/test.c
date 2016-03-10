@@ -42,13 +42,15 @@ static void entry_default(void **state) {
 // monkey testing
 static void entry_random(void **state) {
 	const size_t iterations = 300;
-	// choosen by fair dice roll
-	srand(0xdeadbeef);
 	struct arg args[4];
+	char *argv[5] = {"shape"};
+	// choosen by fair dice roll
+	unsigned int seed = 0xdeadbeef;
+
 	for(size_t i = 0; i < iterations; ++i) {
 		// generate random arguments
 		for (int i = 0; i < 4; ++i)
-			snprintf(ARG(i), 30, "%d", rand());
+			snprintf(ARG(i), 30, "%d", rand_r(&seed));
 		char *argv[] = { "shape",  ARG(0), ARG(1),
 			ARG(2), ARG(3)};
 
