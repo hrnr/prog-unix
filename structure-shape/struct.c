@@ -36,6 +36,7 @@
 
 #include <stdio.h>
 #include <err.h>
+#include <stdlib.h>
 
 #include "struct.h"
 
