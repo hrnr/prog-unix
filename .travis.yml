@@ -2,8 +2,8 @@ language: c
 
 matrix:
   include:
-    # Test gcc-5.0: C++11
-    - env: GCC_VERSION=5 CPP=11 LIBCXX=Off
+    # gcc 5
+    - env: CC=gcc-5
       os: linux
       addons: &gcc5
         apt:
@@ -20,7 +20,6 @@ dist: trusty
 before_install:
   - sudo apt-get -qq update
   - sudo apt-get install -y libcmocka-dev
-  - export CC=gcc-5
 
 # test only structure shape
 script: cd structure-shape && make test && ./shapeup_tests
