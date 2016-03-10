@@ -61,8 +61,8 @@ typedef struct entry_s {
 } entry_t;
 
 /* Shape up the structure from the input data according to the rules above. */
-int
-main(int argc, char *argv[])
+entry_t
+shape(int argc, char *argv[])
 {
 	entry_t e;
 
@@ -102,5 +102,11 @@ main(int argc, char *argv[])
 	    e.timer_hard_sec, e.timer_soft_sec,
 	    e.timer_hard_kb, e.timer_soft_kb);
 
+	return e;
+}
+
+int
+main(int argc, char *argv[]) {
+	shape(argc, argv);
 	return (0);
 }
