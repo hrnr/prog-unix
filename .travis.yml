@@ -3,7 +3,7 @@ language: c
 matrix:
   include:
     # gcc 5
-    - env: CC=gcc-5
+    - env: COMPILER=gcc-5
       os: linux
       addons: &gcc5
         apt:
@@ -20,7 +20,8 @@ dist: trusty
 before_install:
   - sudo apt-get -qq update
   - sudo apt-get install -y libcmocka-dev
+# overcome travis ignorance (we can't setup this directly in matrix)
+  - export CC=$COMPILER
 
 # test only structure shape
 script: cd structure-shape && make test && ./shapeup_tests
-
