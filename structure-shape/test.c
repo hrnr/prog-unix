@@ -2,6 +2,7 @@
 #include <stddef.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdint.h>
 #include <setjmp.h>
 #include <cmocka.h>
 
@@ -59,11 +60,31 @@ static void entry_random(void **state) {
 	}
 }
 
+static void entry_overflow(void **state) {
+	struct arg args[4];
+	char *argv[5] = {"shape"};
+
+	/* max */
+	for (int i = 0; i < 4; ++i) {
+		snprintf(ARG(i), 30, "%d", UINTMAX_MAX);
+	}
+	entry_t e = shape(LENGTH(argv), argv);
+	entry_assert(e);
+
+	/* min */
+	for (int i = 0; i < 4; ++i) {
+		snprintf(ARG(i), 30, "%d", INTMAX_MIN);
+	}
+	e = shape(LENGTH(argv), argv);
+	entry_assert(e);
+}
+
 int main(void) {
     const struct CMUnitTest tests[] = {
         cmocka_unit_test(null_test_success),
         cmocka_unit_test(entry_default),
         cmocka_unit_test(entry_random),
+        cmocka_unit_test(entry_overflow),
     };
     return cmocka_run_group_tests(tests, NULL, NULL);
 }
