@@ -42,6 +42,8 @@
 #include <netinet/if_ether.h>
 #include <arpa/inet.h>
 #include <pcap.h>
+#include <sys/types.h>
+#include <unistd.h>
 
 #ifndef	ETHERTYPE_8021Q
 #define	ETHERTYPE_8021Q	0x8100
@@ -50,6 +52,9 @@
 #if 0
 typedef uint16_t u_int16_t;
 #endif
+
+// pcap network interface
+pcap_t *pd;
 
 /* Frame processing */
 void pcap_callback(u_char *ptr, const struct pcap_pkthdr *hdr,
@@ -88,13 +93,13 @@ void pcap_callback(u_char *ptr, const struct pcap_pkthdr *hdr,
 			break;
 	}
 
-	/* Process the packet here XXX */
+	// send packet
+	pcap_inject(pd, data, len);
 }
 
 int main(int argc, char *argv[])
 {
 	char *ifc_name;
-	pcap_t *pd;
 	char pcap_err[PCAP_ERRBUF_SIZE];
 	bpf_u_int32 localnet, netmask;
 	char *filter = NULL;
@@ -139,7 +144,10 @@ int main(int argc, char *argv[])
 	if ((pcap_if_type = pcap_datalink(pd)) == PCAP_ERROR_NOT_ACTIVATED)
 		errx(1, "pcap_datalink: %s", pcap_geterr(pd));
 
-	/* revoke privileges here XXX */
+	/* revoke root privileges*/
+	if (setuid(getuid()) != 0) {
+		errx(1, "revoke privileges");
+	}
 
 	/* enter reading loop */
 	if (pcap_loop(pd, -1, pcap_callback, (u_char *)&pcap_if_type) < 0)
